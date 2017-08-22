@@ -4,18 +4,25 @@
     <a href="/posts" class="btn btn-default">Go Back</a>
     <h1>{{ $post->title }}</h1>
 
+    <img style="width: 100%" src="/storage/cover_images/{{ $post->cover_image }}" alt=""/>
+
     <div class="well">
         <p>{!! $post->body !!}</p>
 
           <hr>
-            <small>Written on {{ $post->created_at }}</small>
-        <a href="/posts/{{ $post->id }}/edit" class="btn btn-default"> Edit </a>
+            <small>Written on {{ $post->created_at }} by {{ $post->user->name }}</small>
 
-        {!! Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST', 'class' => 'pull-right' ])!!}
-        {{ Form::hidden('_method', 'DELETE') }}
-        {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
+        @if(!Auth::guest())
+            @if(Auth::user()->id == $post->user_id)
+                <a href="/posts/{{ $post->id }}/edit" class="btn btn-default"> Edit </a>
 
-        {!! Form::close() !!}
+                {!! Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST', 'class' => 'pull-right' ])!!}
+                {{ Form::hidden('_method', 'DELETE') }}
+                {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
+
+                {!! Form::close() !!}
+            @endif
+        @endif
 
     </div>
 @endsection
